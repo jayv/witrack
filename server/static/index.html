@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="/static/lib/d3.v3.js" charset="utf-8"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/static/js/witrack.js" charset="utf-8"></script>
+<style>
+
+circle {
+  fill: rgb(31, 119, 180);
+  fill-opacity: .25;
+  stroke: rgb(31, 119, 180);
+  stroke-width: 1px;
+}
+
+.leaf circle {
+  fill: #ff7f0e;
+  fill-opacity: 1;
+}
+
+text {
+  font: 10px sans-serif;
+}
+
+</style>
+
+<script type="text/javascript">
+
+document.addEventListener( "DOMContentLoaded", function(){
+
+	var visualizer = Visualizer();
+
+	var socket = io.connect('http://'+window.location.host);
+	socket.on('news', function (data) {
+		visualizer.update(data);
+	});
+
+});
+
+</script>
+</head>
+<body>
+</body>
+</html>

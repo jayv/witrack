@@ -1,0 +1,16 @@
+node_modules
+npm-debug.log
+tmp
+lib-cov
+*.seed
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.gz
+*.sublime-project
+*.sublime-workspace
+
+npm-debug.log
+

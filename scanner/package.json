@@ -1,0 +1,23 @@
+{
+  "name": "witrack-scanner",
+  "version": "0.0.1",
+  "author": "Jo Voordeckers <jo.voordeckers@pursuit.be>",
+  "description": "Collects data from aircrack-ng an pushes it over socket-io to a centralized server",
+  "bin": {
+    "witrack-scanner": "./collector"
+  },
+  "scripts": {
+    "start": "node ./collector",
+    "test": "vows --spec --isolate"
+  },
+  "main": "./lib/collector",
+  "dependencies" : {
+    "moment"   :  ">=2.0.0",
+    "socket.io-client" :  ">=0.9.16"
+  },
+  "analyze": false,
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.10"
+  }
+}
