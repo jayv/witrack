@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="wificompass" default="help">
+
+	<!-- The local.properties file is created and updated by the 'android' tool.
+         It contains the path to the SDK. It should *NOT* be checked into
+         Version Control Systems. -->
+	<loadproperties srcFile="local.properties" />
+
+	<!-- The ant.properties file can be created by you. It is only edited by the
+         'android' tool to add properties to it.
+         This is the place to change some Ant specific build properties.
+         Here are some properties you may want to change/update:
+
+         source.dir
+             The name of the source directory. Default is 'src'.
+         out.dir
+             The name of the output directory. Default is 'bin'.
+
+         For other overridable properties, look at the beginning of the rules
+         files in the SDK, at tools/ant/build.xml
+
+         Properties related to the SDK location or the project target should
+         be updated using the 'android' tool with the 'update' action.
+
+         This file is an integral part of the build system for your
+         application and should be checked into Version Control Systems.
+
+         -->
+	<property file="ant.properties" />
+
+	<!-- The project.properties file is created and updated by the 'android'
+         tool, as well as ADT.
+
+         This contains project specific properties such as project target, and library
+         dependencies. Lower level build properties are stored in ant.properties
+         (or in .classpath for Eclipse projects).
+
+         This file is an integral part of the build system for your
+         application and should be checked into Version Control Systems. -->
+	<loadproperties srcFile="project.properties" />
+
+	<!-- quick check on sdk.dir -->
+	<fail message="sdk.dir is missing. Make sure to generate local.properties using 'android update project'" unless="sdk.dir" />
+
+
+	<property name="key.store" value="key.store" />
+	<property name="key.alias" value="release-key" />
+  <!--<isset property="key.store.password" />
+  <isset property="key.alias.password" />-->
+	
+	
+
+
+
+	<property name="project.base.dir" value="." />
+	<property name="package.name" value="at.fhstp.wificompass" />
+	<property name="package.mainactivity" value=".activities.MainActivity" />
+
+	<!--<property environment="env" />-->
+
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath>
+			<pathelement location="lib/ant-contrib-1.0b3.jar" />
+		</classpath>
+	</taskdef>
+
+	<taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask" classpath="lib/ant-googlecode-0.0.3.jar" name="gcupload" />
+
+	
+
+	<property name="file.credentials" value="credentials.xml" />
+
+	
+	<target name="git-or-svn">
+		<exec executable="git" resultproperty="git.rc" outputproperty="git.output">
+			<arg line="status" />
+		</exec>
+		
+		<if>
+	<condition>
+			<equals arg1="${git.rc}" arg2="0" />
+</condition>
+
+			<then>
+				<echo>Hey, you're running git!</echo>
+				<property name="vcs.name" value="git" />
+			</then>
+			<else>
+				<property name="vcs.name" value="svn" />
+			</else>
+		</if>
+	</target>
+
+
+	<target name="get-version" depends="git-or-svn">
+		<if>
+<condition>
+			<equals arg1="${vcs.name}" arg2="svn" />
+</condition>
+			<then>
+				<exec executable="svn" output="svninfo.xml">
+					<arg line="info --xml ${project.base.dir}" />
+				</exec>
+				<xmlproperty file="svninfo.xml" prefix="svn" collapseattributes="true" />
+				<delete file="svninfo.xml" />
+
+
+				<!--<echoproperties/>-->
+				<property name="vcs.revision" value="${svn.info.entry.revision}" />
+				<property name="vcs.date" value="${svn.info.entry.commit.date}" />
+				<property name="vcs.url" value="${svn.info.entry.url}" />
+				<property name="vcs.shortrevision" value="${svn.info.entry.revision}" />
+
+			</then>
+			<else>
+				<!-- git -->
+				<exec executable="git" output="git.properties">
+					<arg line="log -1 --pretty=&quot;git.version=%H%ngit.date=%cD%ngit.commiter=%cn%ngit.shortversion=%h&quot;" />
+				</exec>
+				
+				<loadproperties srcFile="git.properties" />
+				<delete file="git.properties" />
+				
+				
+
+				<property name="vcs.revision" value="${git.version}" />
+				<property name="vcs.date" value="${git.date}" />
+				<property name="vcs.url" value="https://code.google.com/p/wificompass/" />
+				<property name="vcs.shortrevision" value="${git.shortversion}" />
+
+
+
+			</else>
+		</if>
+
+		<echo>Current Revision: ${vcs.revision}
+Short Revision: ${vcs.shortrevision}
+Last Commit Date: ${vcs.date}
+Repository Url: ${vcs.url}
+</echo>
+	</target>
+
+	<target name="generate-version" depends="get-version">
+		<echo>Generate build info class...</echo>
+
+		<!-- the source code of the java class -->
+		<echo file="${basedir}/gen/at/fhstp/wificompass/BuildInfo.java">
+package at.fhstp.wificompass;
+public class BuildInfo {
+			public static final String revision="${vcs.revision}";
+			public static final String shortRevision="${vcs.shortrevision}";
+			public static final String commitDate="${vcs.date}";
+			public static final String repositoryURL="${vcs.url}";
+}
+		</echo>
+	</target>
+
+
+	
+
+	<target name="upload-nightly" depends="release, check-credentials">
+		<!-- create a nightly build an upload it to the google project site -->
+
+		<echo>uploading nightly build to google code...</echo>
+		<echo>Remember to delete the old nightly file, because overwrite is not possible!</echo>
+		<gcupload username="${credentials.google.username}" password="${credentials.google.password}" projectname="wificompass" filename="bin/wificompass-release.apk" targetfilename="wificompass-nightly.apk" summary="Nightly build of wificompass" labels="Type-Package, OpSys-Android" verbose="true" />
+
+		<echo>done.</echo>
+	</target>
+	
+	<target name="upload-with-version" depends="release, get-version, check-credentials">
+		<!-- create a nightly build an upload it to the google project site -->
+
+		<echo>uploading nightly build to google code...</echo>
+		<echo>Remember to delete the old nightly file, because overwrite is not possible!</echo>
+		<gcupload username="${credentials.google.username}" password="${credentials.google.password}" projectname="wificompass" filename="bin/wificompass-release.apk" targetfilename="wificompass-${vcs.shortrevision}.apk" summary="build of wificompass, version ${vcs.revision}" labels="Featured, Type-Package, OpSys-Android" verbose="true" />
+
+		<echo>done.</echo>
+	</target>
+
+
+	<target name="check-credentials">
+
+		<if>
+			<condition>
+				<not>
+					<available file="${file.credentials}" />
+				</not>
+			</condition>
+			<then>
+				<echo>google credential file not found, creating it</echo>
+				<antcall target="create-credentials-file" />
+			</then>
+		</if>
+
+
+		<xmlproperty file="${file.credentials}" collapseattributes="true" />
+
+		<!-- quick check on username and password -->
+		<fail message="googlecode username or password is missing. Make sure to fill in your credentials for google code in ${file.credentials}">
+			<condition>
+				<or>
+					<not>
+						<isset property="credentials.google.username" />
+					</not>
+					<not>
+						<isset property="credentials.google.password" />
+					</not>
+					<equals arg1="${credentials.google.username}" arg2="" />
+					<equals arg1="${credentials.google.password}" arg2="" />
+				</or>
+			</condition>
+		</fail>
+
+	</target>
+
+
+	<target name="create-credentials-file">
+		<echo file="${file.credentials}">
+			<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+			<credentials>
+				<google>
+					<username></username>
+					<password></password>
+				</google>
+				<keystore>
+					<password></password>
+					<alias-password></alias-password>
+				</keystore>
+			</credentials>
+rd></alias-password>
+			</keystore>
+]]></echo>
+
+		<fail message="googlecode username and password is missing. Make sure to fill in your credentials for google code in ${file.credentials}" />
+	</target>
+	
+	
+	<target name="load-keypass-credentials" depends="check-credentials">
+		<property name="key.store.password" value="${credentials.keystore.password}"/>
+		<property name="key.alias.password" value="${credentials.keystore.alias-password}" />
+	</target>
+
+
+
+	<target name="run-debug" depends="debug, installd, run" />
+	<target name="run-release" depends="release, installr, run" />
+
+	<target name="run">
+		<exec executable="${sdk.dir}/platform-tools/adb">
+			<arg value="shell" />
+			<arg value="am" />
+			<arg value="start" />
+			<arg value="-a" />
+			<arg value="android.intent.action.MAIN" />
+			<arg value="-n" />
+			<arg value="${package.name}/${package.mainactivity}" />
+		</exec>
+	</target>
+
+
+
+
+	<!-- extension targets. Uncomment the ones where you want to do custom work
+     in between standard targets -->
+	<target name="-pre-build" depends="generate-version" />
+	<!-- <target name="-pre-build" depends="generate-version">
+			
+    </target>-->
+	<!--    <target name="-pre-compile" >
+    </target>
+    
+    <
+
+    /* This is typically used for code obfuscation.
+       Compiled code location: ${out.classes.absolute.dir}
+       If this is not done in place, override ${out.dex.input.absolute.dir} */
+    <target name="-post-compile">
+    </target>
+-->
+
+	<!-- now we use two lib dirs. one which will automatically included in android builds (libs) and one (lib) which holds ant tasks and sources aso  
+<property name="jar.libs.dir" value="lib" /> -->
+	
+	
+  <!-- This runs -package-release and -release-nosign first and then runs
+       only if release-sign is true (set in -release-check,
+       called by -release-no-sign)-->
+  <target name="release"
+              depends="-set-release-mode, -release-obfuscation-check, -package, load-keypass-credentials, -release-prompt-for-password, -release-nosign"
+              if="has.keystore"
+              description="Builds the application. The generated apk file must be signed before
+                          it is published.">
+
+      <!-- only create apk if *not* a library project -->
+      <do-only-if-not-library elseText="Library project: do not create apk..." >
+          <sequential>
+              <property name="out.unaligned.file" location="${out.absolute.dir}/${ant.project.name}-release-unaligned.apk" />
+
+              <!-- Signs the APK -->
+              <echo>Signing final apk...</echo>
+              <signjar
+                      jar="${out.packaged.file}"
+                      signedjar="${out.unaligned.file}"
+                      keystore="${key.store}"
+                      storepass="${key.store.password}"
+                      alias="${key.alias}"
+                      keypass="${key.alias.password}"
+                      verbose="${verbose}" />
+
+              <!-- Zip aligns the APK -->
+              <zipalign-helper in.package="${out.unaligned.file}"
+                                         out.package="${out.final.file}" />
+              <echo>Release Package: ${out.final.file}</echo>
+          </sequential>
+      </do-only-if-not-library>
+      <record-build-info />
+  </target>
+
+
+
+	<!-- Import the actual build file.
+
+         To customize existing targets, there are two options:
+         - Customize only one target:
+             - copy/paste the target into this file, *before* the
+               <import> task.
+             - customize it to your needs.
+         - Customize the whole content of build.xml
+             - copy/paste the content of the rules files (minus the top node)
+               into this file, replacing the <import> task.
+             - customize to your needs.
+
+         ***********************
+         ****** IMPORTANT ******
+         ***********************
+         In all cases you must update the value of version-tag below to read 'custom' instead of an integer,
+         in order to avoid having your file be overridden by tools such as "android update project"
+    -->
+	<!-- version-tag: 1 -->
+	<import file="${sdk.dir}/tools/ant/build.xml" />
+
+
+
+</project>

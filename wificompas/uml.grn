@@ -1,0 +1,46 @@
+<uml>
+   <greenVersion="30500"/>
+   <type>
+      <name="=wificompass/src<at.fhstp.wificompass.model{BssidResult.java[BssidResult"/>
+      <height="-1"/>
+      <width="-1"/>
+      <x="944"/>
+      <y="508"/>
+   </type>
+   <type>
+      <name="=wificompass/src<at.fhstp.wificompass.model{Location.java[Location"/>
+      <height="-1"/>
+      <width="-1"/>
+      <x="942"/>
+      <y="38"/>
+   </type>
+   <type>
+      <name="=wificompass/src<at.fhstp.wificompass.model{Project.java[Project"/>
+      <height="-1"/>
+      <width="-1"/>
+      <x="36"/>
+      <y="26"/>
+   </type>
+   <type>
+      <name="=wificompass/src<at.fhstp.wificompass.model{SensorData.java[SensorData"/>
+      <height="-1"/>
+      <width="-1"/>
+      <x="136"/>
+      <y="594"/>
+   </type>
+   <type>
+      <name="=wificompass/src<at.fhstp.wificompass.model{WifiScanResult.java[WifiScanResult"/>
+      <height="-1"/>
+      <width="-1"/>
+      <x="566"/>
+      <y="146"/>
+   </type>
+   <relationship>
+      <class="edu.buffalo.cse.green.relationship.association.AssociationPart"/>
+      <sourceType="=wificompass/src<at.fhstp.wificompass.model{WifiScanResult.java[WifiScanResult"/>
+      <targetType="=wificompass/src<at.fhstp.wificompass.model{Location.java[Location"/>
+      <bendpoints>
+      </bendpoints>
+   </relationship>
+</uml>
+
