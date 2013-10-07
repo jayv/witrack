@@ -1,0 +1,91 @@
+{
+	title:"test setup",
+	width:600,
+	height:1400,
+
+	scanResults: [{
+	
+	location: {
+		"x":82.50002,
+        "y":242.99997
+	},
+	bssids: [
+		{
+			ssid:"Time Capsule",
+			bssid:"5c:96:9d:69:e3:6b",
+			level:-40
+		},{
+			ssid:"wrt160nl",
+			bssid:"58:6d:8f:89:bd:55",
+			level:-60
+		},{
+			ssid:"Z",
+			bssid:"Z",
+			level:-63
+		}
+	]
+},{
+	id:2,
+	location: {
+		"x":695.0,
+        "y":260.99997
+    },
+	bssids: [
+		{
+			ssid:"Time Capsule",
+			bssid:"5c:96:9d:69:e3:6b",
+			level:-57
+		},{
+			ssid:"wrt160nl",
+			bssid:"58:6d:8f:89:bd:55",
+			level:-64
+		},{
+			ssid:"Z",
+			bssid:"Z",
+			level:-64
+		}
+	]
+},{
+	id:3,
+	location: {
+		"x":699.5,
+        "y":1037.0
+	},
+	bssids: [
+		{
+			ssid:"Time Capsule",
+			bssid:"5c:96:9d:69:e3:6b",
+			level:-79
+		},{
+			ssid:"wrt160nl",
+			bssid:"58:6d:8f:89:bd:55",
+			level:-56
+		},{
+			ssid:"Z",
+			bssid:"Z",
+			level:-51
+		}
+	]
+},{
+	id:4,
+	location: {
+		"x":107.00003,
+        "y":1016.0
+	},
+	bssids: [
+		{
+			ssid:"Time Capsule",
+			bssid:"5c:96:9d:69:e3:6b",
+			level:-64
+		},{
+			ssid:"wrt160nl",
+			bssid:"58:6d:8f:89:bd:55",
+			level:-56
+		},{
+			ssid:"Z",
+			bssid:"Z",
+			level:-42
+		}
+	]
+}]
+}
