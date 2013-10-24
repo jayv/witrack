@@ -71,71 +71,108 @@ var collect = function() {
 
     var file = 'data'
 
-    var ls = spawn('airodump-ng', ['-o', 'csv', '-w', file, 'mon0']);
+    var stopCollecting;
 
-    var infoFile = file + '-01.csv'
-    
-    if (fs.existsSync(infoFile)) {
-        fs.unlinkSync(infoFile);
-    }
+    exec('airmon-ng | grep mon0', function(error){
 
-    var hasCalledErr = false;
-    var isDead = false;
-    fs.watchFile(infoFile, function(curr, prev) {
-        if(isDead) {
-            return;
+        if (error && error.code === 1) {
+
+            exec('airmon-ng start wlan0', function(error){
+
+                if (error) {
+
+                    console.log("Failed to enable Monitoring Mode, quitting.");
+
+                    process.exit();
+
+                } else {
+
+                    console.log("Monitoring Mode enabled, start collecting...");
+
+                    stopCollecting = startCollecting();
+
+                }
+
+            });
+
+        } else {
+
+            console.log("Monitoring Mode already enabled, start collecting...");
+
+            stopCollecting = startCollecting() 
+
         }
-        fs.readFile(infoFile, function(err, data) {
 
-            if(err) {
-                console.log("Error:", err);
-                throw err;                
-            }
-            try {
-                var data = data.toString('utf8');
-                var scan = parseFile(data);
-                console.log("New data", JSON.stringify(scan));
-                socket.emit("scan", scan);
-            } catch(err) {
-                console.log("Error:", err);
-                return;
-            }            
+    });
+
+    var startCollecting = function() {
+
+        var procDump = spawn('airodump-ng', ['-o', 'csv', '-w', file, 'mon0']);
+
+        var infoFile = file + '-01.csv'
+        
+        if (fs.existsSync(infoFile)) {
+            fs.unlinkSync(infoFile);
+        }
+
+        var hasCalledErr = false;
+        var isDead = false;
+        fs.watchFile(infoFile, function(curr, prev) {
             if(isDead) {
-                console.log("Process isDead");
                 return;
             }
+            fs.readFile(infoFile, function(err, data) {
+
+                if(err) {
+                    console.log("Error:", err);
+                    throw err;                
+                }
+                try {
+                    var data = data.toString('utf8');
+                    var scan = parseFile(data);
+                    console.log("New data", JSON.stringify(scan));
+                    socket.emit("scan", scan);
+                } catch(err) {
+                    console.log("Error:", err);
+                    return;
+                }            
+                if(isDead) {
+                    console.log("Process isDead");
+                    return;
+                }
+
+            });
+        });
+        procDump.stderr.setEncoding('utf8');
+        procDump.stderr.on('data', function(data) {
+            if(isDead) {
+                return;
+            }
+        });
+        procDump.on('exit', function(code) {
+            fs.unwatchFile(infoFile)
+            console.log('child process exited with code ' + code);
+
+            console.log('attempting restart...');
+            exit = collect();
 
         });
-    });
-    ls.stderr.setEncoding('utf8');
-    ls.stderr.on('data', function(data) {
-        if(isDead) {
-            return;
+        return function() {
+            fs.unwatchFile(infoFile)
+            isDead = true
+            procDump.kill()
         }
-        if(/No such device/.test(data)) {
-            errCallBack(new Error('Bad device name its not called ' + given))
-        }
+    };
 
-    });
-    ls.on('exit', function(code) {
-        fs.unwatchFile(infoFile)
-        console.log('child process exited with code ' + code);
-
-        console.log('attempting restart...');
-        exit = collect();
-
-    });
     return function() {
-        fs.unwatchFile(infoFile)
-        isDead = true
-        ls.kill()
+        stopCollecting && stopCollecting();
     }
 };
 
 process.on( 'SIGINT', function() {
   console.log( "\ngracefully shutting down from  SIGINT (Crtl-C)" )
   exit();
-  process.exit( )
+  process.exit();
 });
 
 exit = collect();
