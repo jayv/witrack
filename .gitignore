@@ -13,4 +13,5 @@ lib-cov
 *.sublime-workspace
 
 npm-debug.log
-
+.DS_Store
+*.class

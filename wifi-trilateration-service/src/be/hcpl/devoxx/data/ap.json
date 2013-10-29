@@ -1,0 +1,18 @@
+{
+   "58:6d:8f:89:bd:55":{
+      "bssid":"58:6d:8f:89:bd:55",
+      "ssid":"wrt160nl",
+      "capabilities":"[WPA2-PSK-CCMP+TKIP][ESS]",
+      "id":0,
+      "frequency":2412,
+      "calculated":true
+   },
+   "5c:96:9d:69:e3:6b":{
+      "bssid":"5c:96:9d:69:e3:6b",
+      "ssid":"Time Capsule",
+      "capabilities":"[WPA2-PSK-CCMP][ESS]",
+      "id":0,
+      "frequency":2412,
+      "calculated":true
+   }
+}
