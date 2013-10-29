@@ -1,0 +1,38 @@
+#map {
+    stroke-linecap: square;
+    stroke-width: 10;
+    
+    width: 800px;
+}
+
+#map svg {
+    display: block;
+    margin: 0 auto;
+}
+
+#map .room {
+    fill: rgb(242, 194, 90);
+
+    stroke: rgb(205, 74, 22);
+}
+
+#map .disabled {
+    fill: rgb(215, 114, 62);
+}
+
+#map .foyer {
+    fill: rgb(242, 194, 90);
+
+    stroke: rgb(205, 74, 22);
+}
+
+#map .stairs {
+    fill: rgb(242, 194, 90);
+
+    stroke: rgb(205, 74, 22);
+}
+
+#map .doors {
+    stroke: rgb(242, 194, 90);
+    stroke-width: 3;
+}
