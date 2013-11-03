@@ -1,38 +1,73 @@
 #map {
-    stroke-linecap: square;
-    stroke-width: 10;
-    
-    width: 800px;
+    max-height: 100%;
+    width: 100%;
+    min-height: 600px;
+    min-width: 800px;
 }
 
 #map svg {
-    display: block;
-    margin: 0 auto;
+    stroke-linecap: square;
+
+    max-height: 100%;
+    max-width: 100%;
+
+    /* Prevent selection (text) elements inside the SVG. */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    cursor: default;
 }
 
 #map .room {
-    fill: rgb(242, 194, 90);
-
-    stroke: rgb(205, 74, 22);
+    fill: rgb(246, 246, 255);
 }
 
-#map .disabled {
-    fill: rgb(215, 114, 62);
+#map .room-name {
+    font-family: helvetica, serif;
+    font-size: 400pt;
+    fill: rgb(231, 231, 240);
+    text-anchor: left;
 }
 
-#map .foyer {
-    fill: rgb(242, 194, 90);
-
-    stroke: rgb(205, 74, 22);
+#map .wall {
+    stroke-width: 20;
+    stroke: rgb(140, 140, 140);
 }
 
-#map .stairs {
-    fill: rgb(242, 194, 90);
-
-    stroke: rgb(205, 74, 22);
+#map .balcony {
+    fill: rgb(246, 246, 255);
+    stroke: rgb(140, 140, 140);
+    stroke-width: 20;
 }
 
-#map .doors {
-    stroke: rgb(242, 194, 90);
-    stroke-width: 3;
+#map .stairs-fill {
+    /*fill: rgb(246, 246, 255);*/
+    fill: rgb(255, 255, 255);
+}
+
+#map .stairs-border {
+    /*fill: rgb(246, 246, 255);*/
+    /*stroke: rgb(231, 231, 240);*/
+    stroke: rgb(140, 140, 140);
+    /*stroke: rgb(221, 221, 230);*/
+    stroke-width: 20;
+}
+
+#map .stairs-wall {
+    fill: rgb(231, 231, 240);
+}
+
+#map .steps {
+    stroke: rgb(221, 221, 230);
+    stroke-width: 10;
+}
+
+#map .device {
+    fill: lightskyblue;
+    stroke: steelblue;
+    stroke-width: 10;
 }
