@@ -13,12 +13,22 @@ var exit;
 
 var scannerId = fs.readFileSync("/sys/class/net/eth0/address").toString().trim();
 
-console.log("Enable scanning: ", scannerId);
+console.log(new Date().toISOString(), "Enable scanning: ", scannerId);
 
-var socket = socketIoClient.connect('http://10.0.1.21:3000');
+var socket = socketIoClient.connect('http://10.0.1.21:3000', {
+    'max reconnection attempts': Number.MAX_VALUE
+});
 socket.on('connect', function(){    
+    console.log("Connected!");
     socket.on('disconnect', function(){
-        console.log("Disconnected????");
+        console.log(new Date().toISOString(), "Disconnected? :-(");
+    });
+    socket.on('reconnect', function(){
+        console.log(new Date().toISOString(), "Re-Connected!");
+    });
+    socket.on('reconnect_failed', function(){
+        console.log(new Date().toISOString(), "Re-Connect Failed! :-(");
+        exit();
     });
 });
 
@@ -81,13 +91,13 @@ var collect = function() {
 
                 if (error) {
 
-                    console.log("Failed to enable Monitoring Mode, quitting.");
+                    console.log(new Date().toISOString(), "Failed to enable Monitoring Mode, quitting.");
 
                     process.exit();
 
                 } else {
 
-                    console.log("Monitoring Mode enabled, start collecting...");
+                    console.log(new Date().toISOString(), "Monitoring Mode enabled, start collecting...");
 
                     stopCollecting = startCollecting();
 
@@ -97,7 +107,7 @@ var collect = function() {
 
         } else {
 
-            console.log("Monitoring Mode already enabled, start collecting...");
+            console.log(new Date().toISOString(), "Monitoring Mode already enabled, start collecting...");
 
             stopCollecting = startCollecting() 
 
@@ -124,7 +134,7 @@ var collect = function() {
             fs.readFile(infoFile, function(err, data) {
 
                 if(err) {
-                    console.log("Error:", err);
+                    console.log(new Date().toISOString(), "Error:", err);
                     throw err;                
                 }
                 try {
@@ -133,11 +143,11 @@ var collect = function() {
                     //console.log("New data", JSON.stringify(scan));
                     socket.emit("scan", scan);
                 } catch(err) {
-                    console.log("Error:", err);
+                    console.log(new Date().toISOString(), "Error:", err);
                     return;
                 }            
                 if(isDead) {
-                    console.log("Process isDead");
+                    console.log(new Date().toISOString(), "Process isDead");
                     return;
                 }
 
@@ -151,11 +161,10 @@ var collect = function() {
         });
         procDump.on('exit', function(code) {
             fs.unwatchFile(infoFile)
-            console.log('child process exited with code ' + code);
+            console.log(new Date().toISOString(), 'child process exited with code ' + code);
 
-            console.log('attempting restart...');
+            console.log(new Date().toISOString(), 'attempting restart...');
             exit = collect();
-
         });
         return function() {
             fs.unwatchFile(infoFile)
@@ -170,7 +179,7 @@ var collect = function() {
 };
 
 process.on( 'SIGINT', function() {
-  console.log( "\ngracefully shutting down from  SIGINT (Crtl-C)" )
+  console.log(new Date().toISOString(), "\ngracefully shutting down from  SIGINT (Crtl-C)" )
   exit();
   process.exit();
 });
