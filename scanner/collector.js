@@ -130,7 +130,7 @@ var collect = function() {
                 try {
                     var data = data.toString('utf8');
                     var scan = parseFile(data);
-                    console.log("New data", JSON.stringify(scan));
+                    //console.log("New data", JSON.stringify(scan));
                     socket.emit("scan", scan);
                 } catch(err) {
                     console.log("Error:", err);
