@@ -19,7 +19,7 @@ var socket = socketIoClient.connect('http://10.0.1.21:3000', {
     'max reconnection attempts': Number.MAX_VALUE
 });
 socket.on('connect', function(){    
-    console.log("Connected!");
+    console.log(new Date().toISOString(), "Connected!");
     socket.on('disconnect', function(){
         console.log(new Date().toISOString(), "Disconnected? :-(");
     });
