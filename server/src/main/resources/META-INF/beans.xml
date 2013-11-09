@@ -2,7 +2,12 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd"
        version="1.1" bean-discovery-mode="all">
-    <scan>
-        <exclude name="org.jboss.weld.**" />
+    <scan> <!-- Exclude all dependency packages that are incompatible with Weld and joined in a single JAR -->
+        <exclude name="org.**" />
+        <exclude name="io.**" />
+        <exclude name="ch.**" />
+        <exclude name="de.**" />
+        <exclude name="javax.**" />
+        <exclude name="org.**" />
     </scan>
 </beans>

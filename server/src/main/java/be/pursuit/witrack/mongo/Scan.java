@@ -1,4 +1,7 @@
-package be.pursuit.witrack;
+package be.pursuit.witrack.mongo;
+
+
+import org.bson.types.ObjectId;
 
 import java.util.Date;
 
@@ -7,29 +10,38 @@ import java.util.Date;
  */
 public class Scan {
 
-    private String mac;
+    private ObjectId _id;
+    private String deviceId;
     private Date firstSeen;
     private Date lastSeen;
     private int power;
     private int packets;
 
-    @Override
-    public String toString() {
-        return "Scan{" +
-                "mac='" + mac + '\'' +
-                ", firstSeen=" + firstSeen +
-                ", lastSeen=" + lastSeen +
-                ", power=" + power +
-                ", packets=" + packets +
-                "} " + super.toString();
+    public Scan() {
     }
 
-    public String getMac() {
-        return mac;
+    public Scan(final be.pursuit.witrack.json.collector.Scan scan) {
+        deviceId = scan.getMac();
+        firstSeen = scan.getFirstSeen();
+        lastSeen = scan.getLastSeen();
+        power = scan.getPower();
+        packets = scan.getPackets();
     }
 
-    public void setMac(final String mac) {
-        this.mac = mac;
+    public ObjectId get_id() {
+        return _id;
+    }
+
+    public void set_id(final ObjectId _id) {
+        this._id = _id;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(final String deviceId) {
+        this.deviceId = deviceId;
     }
 
     public Date getFirstSeen() {

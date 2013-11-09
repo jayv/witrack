@@ -1,4 +1,4 @@
-package be.pursuit.witrack;
+package be.pursuit.witrack.json.collector;
 
 import java.util.Arrays;
 import java.util.Date;

@@ -1,5 +1,6 @@
 package be.pursuit.witrack;
 
+import be.pursuit.witrack.json.collector.ScanResult;
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOClient;
@@ -8,52 +9,50 @@ import com.corundumstudio.socketio.listener.DataListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.net.InetSocketAddress;
 
 /**
  * @author Jo Voordeckers - jo.voordeckers@pursuit.be
  */
 @Singleton
-public class WiTrackApplicationBean {
+public class MessageServer {
 
-    private static final Logger LOG = LoggerFactory.getLogger(WiTrackApplicationBean.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MessageServer.class);
 
     private Configuration config;
 
     private SocketIOServer server;
 
-    public WiTrackApplicationBean() {
-    }
+    @Inject
+    private Ingester ingester;
 
-    @PostConstruct
     public void start() {
 
-        Configuration config = new Configuration();
-//            config.setHostname("localhost");
+        config = new Configuration();
+        // config.setHostname("localhost");
         config.setPort(3000);
 
         server = new SocketIOServer(config);
 
         server.addEventListener("scan", ScanResult.class, new DataListener<ScanResult>() {
+
             public void onData(final SocketIOClient socketIOClient, final ScanResult scanResult, final AckRequest ackRequest) {
 
-                LOG.debug("Received data: {}, from: {}", scanResult, socketIOClient.getRemoteAddress());
+                ingester.ingest(scanResult, ((InetSocketAddress)socketIOClient.getRemoteAddress()).getAddress().getHostAddress());
+
+                LOG.trace("Received data: {}, from: {}", scanResult, socketIOClient.getRemoteAddress());
 
             }
         });
 
         server.start();
-        LOG.info("WiTrack scanner listening...");
     }
 
-    @PreDestroy
     public void stop() {
 
-       LOG.info("WiTrack scanner stopping...");
-       server.stop();
+        server.stop();
     }
-
 
 }
