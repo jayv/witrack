@@ -20,16 +20,16 @@ var socket = socketIoClient.connect('http://10.0.1.21:3000', {
 });
 socket.on('connect', function(){    
     console.log(new Date().toISOString(), "Connected!");
-    socket.on('disconnect', function(){
-        console.log(new Date().toISOString(), "Disconnected? :-(");
-    });
-    socket.on('reconnect', function(){
-        console.log(new Date().toISOString(), "Re-Connected!");
-    });
-    socket.on('reconnect_failed', function(){
-        console.log(new Date().toISOString(), "Re-Connect Failed! :-(");
-        exit();
-    });
+});
+socket.on('disconnect', function(){
+    console.log(new Date().toISOString(), "Disconnected? :-(");
+});
+socket.on('reconnect', function(){
+    console.log(new Date().toISOString(), "Re-Connected!");
+});
+socket.on('reconnect_failed', function(){
+    console.log(new Date().toISOString(), "Re-Connect Failed! :-(");
+    exit();
 });
 
 var parseFile = function(data) {
