@@ -167,6 +167,7 @@ var collect = function() {
             exit = collect();
         });
         return function() {
+            console.log(new Date().toISOString(), "Collector exiting..." )
             fs.unwatchFile(infoFile)
             isDead = true
             procDump.kill()
@@ -178,8 +179,8 @@ var collect = function() {
     }
 };
 
-process.on( 'SIGINT', function() {
-  console.log(new Date().toISOString(), "\ngracefully shutting down from  SIGINT (Crtl-C)" )
+process.on('SIGINT', function() {
+  console.log(new Date().toISOString(), "gracefully shutting down from SIGINT (Crtl-C)" )
   exit();
   process.exit();
 });
