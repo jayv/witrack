@@ -12,6 +12,7 @@ public class Scan {
 
     private ObjectId _id;
     private String deviceId;
+    private String scannerId;
     private Date firstSeen;
     private Date lastSeen;
     private int power;
@@ -20,7 +21,8 @@ public class Scan {
     public Scan() {
     }
 
-    public Scan(final be.pursuit.witrack.json.collector.Scan scan) {
+    public Scan(final String scannerId, final be.pursuit.witrack.json.collector.Scan scan) {
+        this.scannerId = scannerId;
         deviceId = scan.getMac();
         firstSeen = scan.getFirstSeen();
         lastSeen = scan.getLastSeen();
@@ -74,5 +76,13 @@ public class Scan {
 
     public void setPackets(final int packets) {
         this.packets = packets;
+    }
+
+    public String getScannerId() {
+        return scannerId;
+    }
+
+    public void setScannerId(final String scannerId) {
+        this.scannerId = scannerId;
     }
 }

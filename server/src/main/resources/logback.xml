@@ -9,7 +9,7 @@
         </encoder>
     </appender>
 
-    <logger name="be.pursuit.witrack" level="DEBUG"/>
+    <logger name="be.pursuit.witrack" level="TRACE"/>
 
     <root level="INFO">
         <appender-ref ref="STDOUT"/>

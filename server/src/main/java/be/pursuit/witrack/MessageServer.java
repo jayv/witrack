@@ -40,9 +40,8 @@ public class MessageServer {
 
             public void onData(final SocketIOClient socketIOClient, final ScanResult scanResult, final AckRequest ackRequest) {
 
-                ingester.ingest(scanResult, ((InetSocketAddress)socketIOClient.getRemoteAddress()).getAddress().getHostAddress());
-
-                LOG.trace("Received data: {}, from: {}", scanResult, socketIOClient.getRemoteAddress());
+                String ipAddress = ((InetSocketAddress) socketIOClient.getRemoteAddress()).getAddress().getHostAddress();
+                ingester.ingest(scanResult, ipAddress);
 
             }
         });

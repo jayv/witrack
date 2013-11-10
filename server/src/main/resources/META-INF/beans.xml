@@ -10,4 +10,9 @@
         <exclude name="javax.**" />
         <exclude name="org.**" />
     </scan>
+
+    <decorators>
+        <class>org.jboss.weld.environment.se.threading.RunnableDecorator</class>
+    </decorators>
+
 </beans>
