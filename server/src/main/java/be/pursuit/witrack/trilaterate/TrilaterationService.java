@@ -105,7 +105,7 @@ public class TrilaterationService {
         for (Scan scan : scans) {
 
             if (bucket.getDeviceId() == null) {
-
+                bucket.setTime(scan.getLastSeen());
                 bucket.setDeviceId(scan.getDeviceId());
 
             } else if (!bucket.getDeviceId().equals(scan.getDeviceId())
@@ -114,8 +114,6 @@ public class TrilaterationService {
                 bucketList.add(bucket);
                 bucket = new Bucket();
                 bucket.setDeviceId(scan.getDeviceId());
-            }
-            if (bucket.getTime() == null) {
                 bucket.setTime(scan.getLastSeen());
             }
 
