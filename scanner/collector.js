@@ -35,7 +35,7 @@ socket.on('reconnect_failed', function(){
 var parseFile = function(data) {
 
     var result = {
-        stamp: moment().utc(),
+        stamp: moment().unix() * 1000,
         scannerId: scannerId,
         scans: []  
     };
@@ -63,8 +63,8 @@ var parseFile = function(data) {
 
             var scan = {
                 mac: fields[IDX_MAC],
-                firstSeen: moment(fields[IDX_FIRST_TIME]).utc(),
-                lastSeen: moment(fields[IDX_LAST_TIME]).utc(),
+                firstSeen: moment(fields[IDX_FIRST_TIME]).unix() * 1000,
+                lastSeen: moment(fields[IDX_LAST_TIME]).unix() * 1000,
                 power: parseInt(fields[IDX_POWER]),
                 packets: parseInt(fields[IDX_PACKETS])
             };
