@@ -15,7 +15,7 @@ var scannerId = fs.readFileSync("/sys/class/net/eth0/address").toString().trim()
 
 console.log(new Date().toISOString(), "Enable scanning: ", scannerId);
 
-var socket = socketIoClient.connect('http://172.17.230.123:3000', {
+var socket = socketIoClient.connect('http://172.19.0.177:3000', {
     'max reconnection attempts': Number.MAX_VALUE
 });
 socket.on('connect', function(){    
