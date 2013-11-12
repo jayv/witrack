@@ -777,9 +777,9 @@ $(function() {
         map.setDevices(randomDevices);
     }
 
-    setRandomDevices();
+    //setRandomDevices();
 
-    setInterval(setRandomDevices, 10000);
+    //setInterval(setRandomDevices, 10000);
 
     // Test for adding and then updating a device
     /*map.addDevice(new Device(1, 100, 4250));
@@ -787,9 +787,9 @@ $(function() {
         map.updateDevice(new Device(1, 3800, 6600));
     }, 2000);*/
 
-    /*setInterval(function() {
+    setInterval(function() {
         map.addDevice(generateRandomDevice());
-    }, 100);*/
+    }, 200);
 
     /*setTimeout(function() {
         map.removeDevice(1);
@@ -803,7 +803,7 @@ $(function() {
         map.setDevices([new Device(1, 300, 300)]);
     }, 5000);*/
 
-    /*setInterval(function() {
+    setInterval(function() {
         map.removeAllDevices();
-    }, 60000);*/
+    }, 120000);
 });
