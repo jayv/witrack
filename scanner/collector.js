@@ -69,7 +69,10 @@ var parseFile = function(data) {
                 packets: parseInt(fields[IDX_PACKETS])
             };
             
-            result.scans.push(scan);
+            if (moment(scan.lastSeen).isAfter(moment().subtract(45, 'second')) {
+                result.scans.push(scan);
+            }
+            
         }
 
     });
@@ -141,7 +144,16 @@ var collect = function() {
                     var data = data.toString('utf8');
                     var scan = parseFile(data);
                     //console.log("New data", JSON.stringify(scan));
-                    socket.emit("scan", scan);
+                        
+                    var scans = scan.scans;
+
+                    while (scans.length > 0) {
+
+                        var count = Math.min(20, scans.length);
+                        scan.scans = scans.splice(0, count);
+                        socket.emit("scan", scan);
+                    }
+
                 } catch(err) {
                     console.log(new Date().toISOString(), "Error:", err);
                     return;
