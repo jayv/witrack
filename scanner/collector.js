@@ -149,7 +149,7 @@ var collect = function() {
 
                     while (scans.length > 0) {
 
-                        var count = Math.min(20, scans.length);
+                        var count = Math.min(50, scans.length);
                         scan.scans = scans.splice(0, count);
                         socket.emit("scan", scan);
                     }
