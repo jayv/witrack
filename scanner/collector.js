@@ -69,7 +69,7 @@ var parseFile = function(data) {
                 packets: parseInt(fields[IDX_PACKETS])
             };
             
-            if (moment(scan.lastSeen).isAfter(moment().subtract(45, 'second')) {
+            if (moment(scan.lastSeen).isAfter(moment().subtract(45, 'second'))) {
                 result.scans.push(scan);
             }
             
