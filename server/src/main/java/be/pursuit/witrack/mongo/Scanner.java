@@ -27,6 +27,8 @@ public class Scanner {
 
         private double correction;
 
+        private String name;
+
         public double getCorrection() {
             return correction;
         }
@@ -49,6 +51,14 @@ public class Scanner {
 
         public void setY(final int y) {
             this.y = y;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(final String name) {
+            this.name = name;
         }
     }
 
@@ -90,5 +100,22 @@ public class Scanner {
 
     public void setLocation(final Location location) {
         this.location = location;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final Scanner scanner = (Scanner) o;
+
+        if (!scannerId.equals(scanner.scannerId)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return scannerId.hashCode();
     }
 }

@@ -18,7 +18,7 @@ public class ScanResult {
                 "stamp=" + stamp +
                 ", scannerId='" + scannerId + '\'' +
                 ", scans=" + Arrays.toString(scans) +
-                "} " + super.toString();
+                "} ";
     }
 
     public Date getStamp() {

@@ -26,21 +26,21 @@ sample = data.frame(x=xvals, y=yvals, radius=rvals)
 
 errors <- 1/sample$radius^2
 
-#fit <- nls(radius ~ sqrt(abs((x-x0))^2+abs((y-y0))^2), data = sample, 
-#           start=list(x0=sample[1,]$x, y0=sample[1,]$y), weights = errors) 
+fit <- nls(radius ~ sqrt(abs((x-x0))^2+abs((y-y0))^2), data = sample, 
+           start=list(x0=sample[1,]$x, y0=sample[1,]$y), weights = errors) 
 
-#solution <- summary(fit)$coefficients[,1]
+solution <- summary(fit)$coefficients[,1]
 
-#print(solution)
+print(solution)
 
-#print(summary(fit))
+print(summary(fit))
 
 plot(sample$x, sample$y)
 for(i in 1:nrow(sample)) {
   row <- sample[i,]
   draw.circle(row$x, row$y, row$radius)
 }
-#draw.circle(solution["x0"], solution["y0"], 0.02,col="red")
+draw.circle(solution["x0"], solution["y0"], 0.02,col="red")
 
 x_w <- sum(sample$x*(1/sample$radius)) / sum(sample$radius)
 y_w <- sum(sample$y*(1/sample$radius)) / sum(sample$radius)
@@ -51,4 +51,4 @@ print(y_w)
 
 rm(i)
 rm(row)
-#print(summary(fit))
+print(summary(fit))

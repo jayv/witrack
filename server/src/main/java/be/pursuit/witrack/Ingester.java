@@ -43,7 +43,7 @@ public class Ingester {
 
     private void storeScan(final ScanResult scanResult) {
 
-        LOG.trace("Storing scan from {}", scanResult.getScannerId());
+        LOG.trace("Storing scan from {}: {}", scanResult.getScannerId(), scanResult);
         for (Scan scan : scanResult.getScans()) {
             db.scans().insert(new be.pursuit.witrack.mongo.Scan(scanResult.getScannerId(), scan));
         }
@@ -63,6 +63,7 @@ public class Ingester {
             location.setX(1);
             location.setY(1);
             location.setCorrection(1);
+            location.setName("Scanner "+scanner.getScannerId());
             scanner.setLocation(location);
 
             LOG.info("Creating new Scanner {}, needs a position!", scanner.getScannerId());

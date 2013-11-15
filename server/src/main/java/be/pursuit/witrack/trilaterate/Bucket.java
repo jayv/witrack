@@ -44,8 +44,10 @@ public class Bucket {
             return getScanner().getLocation().getY();
         }
 
-        public int radius() {
-            return (int) (getPower() * getScanner().getLocation().getCorrection());
+        public double radius() {
+            // Free-space path loss
+            double exp = (27.55 - (20.0 * Math.log10(2412)) + Math.abs(getPower())) / 20.0;
+            return Math.pow(10.0, exp);
         }
 
     }

@@ -18,7 +18,7 @@ public class WiTrackApplication {
     private static final Logger LOG = LoggerFactory.getLogger(WiTrackApplication.class);
 
     @Inject
-    private MessageServer server;
+    private MessageServer messageServer;
 
     @Inject
     private Timer timer;
@@ -30,7 +30,7 @@ public class WiTrackApplication {
     public void start() {
         LOG.info("Launching WiTrack scanner...");
         db.init();
-        server.start();
+        messageServer.start();
         timer.startTimers();
         LOG.info("WiTrack scanner listening...");
     }
@@ -39,7 +39,7 @@ public class WiTrackApplication {
     public void stop() {
         LOG.info("WiTrack scanner stopping...");
         timer.stopTimers();
-        server.stop();
+        messageServer.stop();
         db.stop();
         LOG.info("WiTrack scanner stopped.");
     }

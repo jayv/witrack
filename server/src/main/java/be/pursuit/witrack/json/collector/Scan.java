@@ -13,6 +13,17 @@ public class Scan {
     private int power;
     private int packets;
 
+    @Override
+    public String toString() {
+        return "Scan{" +
+                "mac='" + mac + '\'' +
+                ", firstSeen=" + firstSeen +
+                ", lastSeen=" + lastSeen +
+                ", power=" + power +
+                ", packets=" + packets +
+                "} ";
+    }
+
     public String getMac() {
         return mac;
     }

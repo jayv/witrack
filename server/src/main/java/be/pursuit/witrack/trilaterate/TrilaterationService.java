@@ -5,8 +5,8 @@ import be.pursuit.witrack.mongo.Position;
 import be.pursuit.witrack.mongo.Scan;
 import be.pursuit.witrack.mongo.Scanner;
 import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import com.google.common.collect.*;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +27,7 @@ public class TrilaterationService {
 
     private static final int ONE_MINUTES = 1 * 1000 * 60;
 
-    private static final int BUCKET_WINDOW = 30 * 1000; // 30s window
+    private static final int BUCKET_WINDOW = 60 * 1000; // 15s window
 
     private static final int CPU_CORES = Runtime.getRuntime().availableProcessors();
 
@@ -45,6 +45,7 @@ public class TrilaterationService {
 
         }
     };
+    private static final int MIN_SCANS_PER_DEVICE = 3;
 
     @Inject
     private Database db;
@@ -88,8 +89,20 @@ public class TrilaterationService {
 
         for (Bucket bucket : buckets) {
 
-            Position position = calulator.calculate(bucket);
-            db.positions().insert(position);
+            if (bucket.getMeasurements().size() >= MIN_SCANS_PER_DEVICE) {
+                Position position = calulator.calculate(bucket);
+                db.positions().insert(position);
+            } else {
+
+
+                StringBuffer sb = new StringBuffer();
+
+                for (Bucket.Measurement measurement : bucket.getMeasurements()) {
+                    sb.append(" scanner: ").append(measurement.getScanner().getScannerId()).append(" power: ").append(measurement.getPower());
+                }
+
+                LOG.debug("Skipped bucket for {} @{} : {}", bucket.getDeviceId(), bucket.getTime(), sb);
+            }
         }
 
     }
@@ -111,6 +124,7 @@ public class TrilaterationService {
             } else if (!bucket.getDeviceId().equals(scan.getDeviceId())
                     || !inTimeRange(scan.getLastSeen(), bucket.getTime())) {
 
+                averageMeasures(bucket);
                 bucketList.add(bucket);
                 bucket = new Bucket();
                 bucket.setDeviceId(scan.getDeviceId());
@@ -124,6 +138,40 @@ public class TrilaterationService {
         }
 
         return bucketList;
+    }
+
+    private void averageMeasures(final Bucket bucket) {
+
+        Map<Scanner, List<Bucket.Measurement>> map = new HashMap<>();
+
+        for (Bucket.Measurement measurement : bucket.getMeasurements()) {
+
+            List<Bucket.Measurement> measurements = map.get(measurement.getScanner());
+
+            if (measurements == null) {
+                measurements = new ArrayList<>();
+                map.put(measurement.getScanner(), measurements);
+            }
+            measurements.add(measurement);
+        }
+        bucket.setMeasurements(new ArrayList<Bucket.Measurement>());
+
+        for (Map.Entry<Scanner, List<Bucket.Measurement>> entry : map.entrySet()) {
+
+            DescriptiveStatistics scans = new DescriptiveStatistics();
+
+            for (Bucket.Measurement measurement : entry.getValue()) {
+
+                scans.addValue(measurement.getPower());
+            }
+
+            Bucket.Measurement measurement = new Bucket.Measurement();
+            measurement.setPower((int) Math.round(scans.getMean()));
+            measurement.setScanner(entry.getKey());
+
+            bucket.getMeasurements().add(measurement);
+        }
+
     }
 
     private boolean inTimeRange(Date scan, Date bucketTime) {

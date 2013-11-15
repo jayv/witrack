@@ -22,24 +22,29 @@ public class TrilaterationCalulator {
 
         for (Bucket.Measurement measurement : bucket.getMeasurements()) {
 
-            int radius = measurement.radius();
-            int oneOverRadius = 1 / radius;
-            numeratorX.addValue(measurement.x() * oneOverRadius);
-            numeratorY.addValue(measurement.y() * oneOverRadius);
-            denominator.addValue(radius);
+            double weight = 1.0 / measurement.radius();
+
+            System.out.println("Measurement:"+weight+" "+bucket.getDeviceId()+" "+measurement.getPower()+" "+measurement.getScanner().getScannerId());
+
+            numeratorX.addValue(((double)measurement.x()) * weight);
+            numeratorY.addValue(((double)measurement.y()) * weight);
+            denominator.addValue(weight);
         }
 
         double sumRadii = denominator.getSum();
 
-        location.setX((int) (numeratorX.getSum() / sumRadii));
-        location.setY((int) (numeratorY.getSum() / sumRadii));
+        double x = numeratorX.getSum() / sumRadii;
+        double y = numeratorY.getSum() / sumRadii;
+
+        location.setX((int) x);
+        location.setY((int) y);
 
         Position position = new Position();
         position.setDeviceId(bucket.getDeviceId());
         position.setTime(bucket.getTime());
         position.setLocation(location);
 
-        LOG.trace("Trilaterated device: {} x: {}  y: {} based on {} measurements", new Object[] { position.getDeviceId(), position.getLocation().getX(), location.getY(), bucket.getMeasurements().size() });
+        LOG.trace("Trilaterated device: {} x: {}  y: {} based on {} measurements @ {}", new Object[] { position.getDeviceId(), x, y, bucket.getMeasurements().size(), bucket.getTime() });
 
         return position;
     }
